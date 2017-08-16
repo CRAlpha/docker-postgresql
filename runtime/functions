@@ -247,6 +247,12 @@ initialize_database() {
   set_postgresql_param "log_directory" "${PG_LOGDIR}"
   set_postgresql_param "log_filename" "postgresql-${PG_VERSION}-main.log"
 
+  # configure extension
+  exec_as_postgres echo "include = 'zhparser.conf'" >> ${PG_CONF}
+  exec_as_postgres echo "include = 'smlar.conf'" >> ${PG_CONF}
+  exec_as_postgres cp ${PG_APP_HOME}/config/zhparser.conf ${PG_DATADIR}/zhparser.conf
+  exec_as_postgres cp ${PG_APP_HOME}/config/smlar.conf ${PG_DATADIR}/smlar.conf
+
   # trust connections from local network
   if [[ ${PG_TRUST_LOCALNET} == true ]]; then
     echo "Trusting connections from the local network..."
